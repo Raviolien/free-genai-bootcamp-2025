@@ -54,6 +54,27 @@ BAD - don't provide translation or subject/pronoun
 </clues_valuation>
 </example>
 
+
+<examples_clues>
+<example>
+<teacher_output>
+"Oiseau" should be plural, think about how to make the ending -eau in plural
+</teacher_output>
+<clues_valuation>
+GOOD - giving clues without giving the answer
+</clues_valuation>
+</example>
+
+<examples_clues>
+<example>
+<teacher_output>
+Think about what happens when you combine "de" and "le"
+</teacher_output>
+<clues_valuation>
+GOOD - giving clues without giving the answer
+</clues_valuation>
+</example>
+
 <example>
 <teacher_output>
 The verb "to take" in French is "prendre."
