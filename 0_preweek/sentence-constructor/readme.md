@@ -32,9 +32,7 @@ DeepSeek-V3 and DeepThink (R1)
 - Last, I ran the prompt document with DeepSeek, where it worked well without further adjustments
 
 #### Notes
-- chat gpt: 
--- 4o works really well with the prompt script, it gives clues that are helpfull without giving away the answer. 
--- 3.5 first run with the script that worked with 4o, the model gave translations in the clues. Works well after giving some more examples of what not to put in the clues
+- chat gpt: 4o works really well with the prompt script, it gives clues that are helpfull without giving away the answer. 3.5 first run with the script that worked with 4o, the model gave translations in the clues. Works well after giving some more examples of what not to put in the clues
 
 - meta ai: not available in Denmark
 
@@ -44,7 +42,7 @@ Ran into limit of free usage pretty fast.
 
 - chatGPT adopted (ran the prompt script after changes done for mistral ai) the part on informing about right parts nicely. Misspellings handled better, but is not understood as a misspelling (to instead of tu)
 
-Anthropic Claude: 
+- Anthropic Claude: 
 Step "Initial" works with the prompt scrip (i.e. gives the wanted vocabulary table and relevant and understandable clues). However, when asked for more clues it provides examples that are the correct translation of the student sentence - the examples are a good idea but should be unrelated to the student sentence. 
 Ignores the misspelling of "To" (should be tu). Added "be mindfull of student mispelling". 
 
