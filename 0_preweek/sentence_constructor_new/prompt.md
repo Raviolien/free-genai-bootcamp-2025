@@ -27,7 +27,8 @@ GOOD
 <teacher_output>
 | English   | French |
 | I	        | Je |
-| take      | prends |
+| take      | prends (irregular verb) |
+| to fly	| voler (regular -er verb) |
 | the bus   | le bus |
 | to school | à l'école |
 </teacher_output>
@@ -54,6 +55,15 @@ BAD - don't provide translation or subject/pronoun
 </clues_valuation>
 </example>
 
+<examples_clues>
+<example>
+<teacher_output>
+The article "le" may be used for the noun "lac."
+</teacher_output>
+<clues_valuation>
+BAD - don't provide the article, only provide gender
+</clues_valuation>
+</example>
 
 <examples_clues>
 <example>
