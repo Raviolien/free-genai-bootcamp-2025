@@ -42,6 +42,7 @@ BAD - pronoun provided, definite article for noun provided, vers conjugated
 - don't provide translations
 - don't restate words in the vocabulary table
 - don't conjugate words
+- for verbs inform if it is irregular or what regular conjugation it follows
 
 <examples_clues>
 <example>
