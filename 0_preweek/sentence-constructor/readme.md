@@ -46,6 +46,10 @@ Ran into limit of free usage pretty fast.
 Step "Initial" works with the prompt scrip (i.e. gives the wanted vocabulary table and relevant and understandable clues). However, when asked for more clues it provides examples that are the correct translation of the student sentence - the examples are a good idea but should be unrelated to the student sentence. 
 Ignores the misspelling of "To" (should be tu). Added "be mindfull of student mispelling". 
 
+## Overall findings
+- I find that the AI powered assistants that I tested work using the same prompt document, after some small tweaks.  
+
+- I find that added parts to make it work for one AI powered assistant also works well for the other AI powered assistants (when going back and rerunning the final prompt document) - for example when I add one instruction ("don't provide clues about words that are correctly translated") for Mistral AI this works well for ChatGPT as well, ChatGPT then writes "this part of the sentence is correct".
 
 ## Further work (wanted to but didn't have time)
 Take the final version of the prompt document and run again with all AI assistents and do same input sentence and same tranlation attempts to test the different steps with the different AI assistents. 
