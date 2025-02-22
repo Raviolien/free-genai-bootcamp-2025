@@ -91,6 +91,7 @@ class YoutubeTranscriptDownloader:
 if __name__ == "__main__":
     # Example usage
     test_url = "https://www.youtube.com/watch?v=r6RbPc55SAI"
+    test_url = "https://www.youtube.com/watch?v=1w3EwRGpubQ&list=PL_Ddcj9mdkpWyWueYp32n4aH83du-9Adv&index=4"
     
     try:
         # Create transcripts directory
