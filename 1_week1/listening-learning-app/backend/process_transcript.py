@@ -197,11 +197,31 @@ class TranscriptProcessor:
                     f.write("\n")
 
 if __name__ == "__main__":
-    # Initialize processor and process transcripts
+    # Initialize processor
     processor = TranscriptProcessor()
     
     # Process all transcript files in the directory
     for transcript_file in processor.transcripts_dir.glob('*.txt'):
+        # Get base name without extension
+        base_name = transcript_file.stem
+        
+        # Check if files already exist
+        model_response_path = processor.exercises_dir / f"{base_name}_model_response.json"
+        multiple_choice_path = processor.exercises_dir / f"{base_name}_multiple_choice.txt"
+        dialog_matching_path = processor.exercises_dir / f"{base_name}_dialog_matching.txt"
+        other_exercises_path = processor.exercises_dir / f"{base_name}_other_exercises.txt"
+        
+        # Skip if any of the files exist
+        if any([
+            model_response_path.exists(),
+            multiple_choice_path.exists(),
+            dialog_matching_path.exists(),
+            other_exercises_path.exists()
+        ]):
+            print(f"Skipping {transcript_file.name} - exercises already exist")
+            continue
+
+        # Process file if no exercises exist
         try:
             processor.process_transcript(transcript_file.name)
             print(f"Successfully processed {transcript_file.name}")
