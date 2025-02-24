@@ -52,12 +52,31 @@ class TranscriptProcessor:
             dict: Dictionary containing different types of exercises
         """
         prompt = """
-        Please analyze this French language test transcript and extract:
-        1. Multiple choice exercises (including audio content and related questions)
-        2. Dialog matching exercises (including dialogs, images to match, and correct matches)
-        3. Other types of exercises
+        This is a French language test transcript. Some parts may be in English. 
+        The transcript is structured as follows:
+        1. First part: Exercise content and questions
+           - Multiple choice questions with their content and options
+           - Dialog matching exercises with their content
+           - Other types of exercises
+        2. Last part: Answers section
+           - Sometimes contains full content repeated with answers
+           - Sometimes only contains questions and correct answers
+           
+        Please analyze both parts and:
+        1. Match questions from the first part with their answers from the last part
+        2. For multiple choice: Match the audio content with its related questions
+        3. For dialog matching: Extract dialogs and their image matches
+        4. For other exercises: Extract exercise type, content and solution
 
-        Format the output as a JSON with the following structure:
+        Important:
+        - Extract and output only the French text (ignore English translations)
+        - Match content from first part with answers from last part
+        - Group questions by their related audio/dialog content
+        - Include all options mentioned in the first part
+        - Use correct answers from the answers section
+        - Ignore exercise instructions and filler text
+
+        Format the output as a JSON with the following structure (all text in French):
         {
             "multiple_choice": [
                 {
@@ -66,9 +85,8 @@ class TranscriptProcessor:
                         {
                             "question": "question text",
                             "options": ["option1", "option2", ...],
-                            "correct_answer": "answer"
-                        },
-                        // more questions related to same content...
+                            "correct_answer": "answer from answers section"
+                        }
                     ]
                 }
             ],
@@ -83,12 +101,10 @@ class TranscriptProcessor:
                 {
                     "type": "exercise_type",
                     "content": "exercise_content",
-                    "solution": "solution"
+                    "solution": "solution from answers section"
                 }
             ]
         }
-
-        Extract only the actual exercises, questions, and answers. Ignore instructions and filler text.
         """
 
         full_prompt = f"{prompt}\n\nHere's the transcript:\n{transcript}"
