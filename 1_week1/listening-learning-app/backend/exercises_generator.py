@@ -64,7 +64,9 @@ class ExercisesGenerator:
 {examples_text}
 Generate a new multiple choice exercise about {topic}. 
 Use the same format as the examples, with Content, Questions, Options, and Correct answers.
-Make sure the exercise is educational and the correct answers are clearly indicated."""
+Please generate exactly 4 questions.
+Make sure the exercise is educational and the correct answers are clearly indicated.
+The content should be a complete text with proper punctuation, using periods (.) at the end of sentences."""
 
         print("\nMultiple Choice Prompt:")
         print("=" * 80)
