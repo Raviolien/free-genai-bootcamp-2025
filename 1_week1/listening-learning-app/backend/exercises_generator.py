@@ -107,6 +107,8 @@ The content should be a complete text with proper punctuation, using periods (.)
 {examples_text}
 Generate a new dialog matching exercise about {topic}.
 Use the same format as the examples, with Dialogs, Images, and Correct matches.
+Please generate exactly 5 dialogs.
+The content should be a complete text with proper punctuation, using periods (.) at the end of sentences
 Make sure the dialogs and images are related and the matches make logical sense."""
 
         print("\nDialog Matching Prompt:")
@@ -114,23 +116,27 @@ Make sure the dialogs and images are related and the matches make logical sense.
         print(prompt)
         print("=" * 80)
         
-        body = {
-            "messages": [
-                {"role": "user", "content": prompt}
-            ],
-            "temperature": 0.7
-        }
+        conversation = [
+            {
+                "role": "user",
+                "content": [{"text": prompt}],
+            }
+        ]
         
-        response = self.bedrock.invoke_model_with_response_stream(
+        response = self.bedrock.converse(
             modelId="amazon.nova-micro-v1:0",
-            body=json.dumps(body)
+            messages=conversation,
+            inferenceConfig={"maxTokens": 512, "temperature": 0.5, "topP": 0.9},
         )
         
-        # Collect the response chunks
-        response_text = ""
-        for event in response:
-            chunk = json.loads(event['chunk']['bytes'].decode())
-            response_text += chunk.get('completion', '')
+        print("\nRaw response:")
+        print(json.dumps(response, indent=2))  # Pretty print the response
+
+        response_text = response['output']['message']['content'][0]['text']
+        print("\nGenerated Exercise:")
+        print("=" * 80)
+        print(response_text)
+        print("=" * 80)
             
         return self._parse_dialog_matching_response(response_text)
 
@@ -200,11 +206,11 @@ if __name__ == "__main__":
     generator = ExercisesGenerator()
     
     # Generate a multiple choice exercise
-    print("\nGenerating multiple choice exercise about ordering food:")
-    mc_exercise = generator.generate_multiple_choice("ordering food at a restaurant")
-    print(json.dumps(mc_exercise, indent=2))
+    #print("\nGenerating multiple choice exercise about ordering food:")
+    #mc_exercise = generator.generate_multiple_choice("ordering food at a restaurant")
+    #print(json.dumps(mc_exercise, indent=2))
     
     # Generate a dialog matching exercise
-    #print("\nGenerating dialog matching exercise about train travel:")
-    #dm_exercise = generator.generate_dialog_matching("taking the train")
-    #print(json.dumps(dm_exercise, indent=2)) 
+    print("\nGenerating dialog matching exercise about train travel:")
+    dm_exercise = generator.generate_dialog_matching("taking the train")
+    print(json.dumps(dm_exercise, indent=2)) 
