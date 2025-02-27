@@ -108,7 +108,7 @@ The content should be a complete text with proper punctuation, using periods (.)
 Generate a new dialog matching exercise about {topic}.
 Use the same format as the examples, with Dialogs, Images, and Correct matches.
 Please generate exactly 5 dialogs.
-The content should be a complete text with proper punctuation, using periods (.) at the end of sentences
+The content should be a complete text with proper punctuation, using periods (.) at the end of sentences.
 Make sure the dialogs and images are related and the matches make logical sense."""
 
         print("\nDialog Matching Prompt:")
