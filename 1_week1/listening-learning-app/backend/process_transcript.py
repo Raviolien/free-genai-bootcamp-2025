@@ -75,6 +75,7 @@ class TranscriptProcessor:
         - Include all options mentioned in the first part
         - Use correct answers from the answers section
         - Ignore exercise instructions and filler text
+        - The content should be a complete text with proper punctuation, using periods (.) at the end of sentences
 
         Format the output as a JSON with the following structure (all text in French):
         {
