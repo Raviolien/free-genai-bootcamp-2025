@@ -3,7 +3,7 @@ from urllib.parse import urlparse, parse_qs
 from pathlib import Path
 
 class YoutubeTranscriptDownloader:
-    def __init__(self, transcripts_dir: str = "transcripts", language: str = "fr"):
+    def __init__(self, transcripts_dir: str = "data/transcripts", language: str = "fr"):
         """
         Initialize the downloader with a directory and language setting.
         
@@ -96,7 +96,7 @@ if __name__ == "__main__":
     
     try:
         # Create transcripts directory
-        Path(__file__).parent.joinpath("transcripts").mkdir(exist_ok=True)
+        Path(__file__).parent.joinpath("data/transcripts").mkdir(parents=True, exist_ok=True)
         
         # Initialize downloader and get transcript
         downloader = YoutubeTranscriptDownloader()
