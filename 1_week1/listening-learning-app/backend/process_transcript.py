@@ -13,8 +13,8 @@ class TranscriptProcessor:
             service_name='bedrock-runtime',
             region_name='us-east-1'  # or your preferred region
         )
-        self.transcripts_dir = Path(__file__).parent / "transcripts"
-        self.exercises_dir = Path(__file__).parent / "exercises"
+        self.transcripts_dir = Path(__file__).parent / "data" / "transcripts"
+        self.exercises_dir = Path(__file__).parent / "data" / "exercises"
         
         # Create exercises directory if it doesn't exist
         self.exercises_dir.mkdir(exist_ok=True)
@@ -75,7 +75,7 @@ class TranscriptProcessor:
         - Include all options mentioned in the first part
         - Use correct answers from the answers section
         - Ignore exercise instructions and filler text
-        - The content should be a complete text with proper punctuation, using periods (.) at the end of sentences
+        - Use/add periods (.) in the content where it makes sense
 
         Format the output as a JSON with the following structure (all text in French):
         {
