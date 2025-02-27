@@ -1,0 +1,7 @@
+youtube-transcript-api
+boto3
+chromadb
+sentence-transformers
+streamlit
+
+#openai
