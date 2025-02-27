@@ -276,7 +276,7 @@ if __name__ == "__main__":
     store = ExerciseVectorStore()
     
     # Add exercises from the exercises directory
-    exercises_dir = Path(__file__).parent / "exercises"
+    exercises_dir = Path(__file__).parent / "data" / "exercises"
     store.add_exercises(exercises_dir)
     
     # Example query for dialog matching
