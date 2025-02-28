@@ -22,6 +22,15 @@ sys.path.append(str(backend_dir))
 
 # Import after environment setup
 from exercise_generator import ExercisesGenerator
+from audio_generator import AudioGenerator
+# Initialize generators at startup
+try:
+    generator = ExercisesGenerator()
+    audio_generator = AudioGenerator()
+except Exception as e:
+    logger.error(f"Error initializing generators: {e}")
+    generator = None
+    audio_generator = None
 
 def display_multiple_choice_exercise(exercise):
     """Display a multiple choice exercise in an interactive way"""
@@ -34,13 +43,58 @@ def display_multiple_choice_exercise(exercise):
         st.session_state.current_exercise = exercise
         st.session_state.user_answers = {}
         st.session_state.submitted = False
+        
+        # Generate audio when exercise is first loaded
+        try:
+            logger.info(f"Starting audio generation for content: {exercise['content'][:100]}...")  # Log first 100 chars
+            audio_files = audio_generator.generate_audio(
+                exercise_id="current",
+                content={'content': exercise['content']}
+            )
+            logger.info(f"Audio generation returned: {audio_files}")
+            
+            if 'content' in audio_files:
+                audio_path = audio_files['content']
+                logger.info(f"Attempting to read audio from: {audio_path}")
+                
+                # Check if path exists and is readable
+                if not os.path.exists(audio_path):
+                    logger.error(f"Audio file does not exist at path: {audio_path}")
+                    raise FileNotFoundError(f"Audio file not found: {audio_path}")
+                    
+                # Check file size
+                file_size = os.path.getsize(audio_path)
+                logger.info(f"Audio file size: {file_size} bytes")
+                
+                with open(audio_path, 'rb') as f:
+                    st.session_state.current_audio = f.read()
+                logger.info("Successfully loaded audio file into session state")
+            else:
+                logger.error(f"No 'content' key in audio_files: {audio_files}")
+                raise KeyError("No 'content' key in audio files response")
+            
+        except Exception as e:
+            logger.error(f"Error generating/loading audio: {e}", exc_info=True)
+            st.error(f"Could not generate audio for this exercise: {str(e)}")
+            st.session_state.current_audio = None
     
     # Create a container for the exercise content
     exercise_container = st.container()
     
     with exercise_container:
-        st.write("### Content")
-        st.write(st.session_state.current_exercise.get('content', ''))
+        st.write("### Listen to the Dialog")
+        if st.session_state.get('current_audio'):
+            st.audio(st.session_state.current_audio)
+        else:
+            st.error("Audio not available")
+        
+        # Add a button to show/hide text content
+        if st.button("Show/Hide Text"):
+            st.session_state.show_text = not st.session_state.get('show_text', False)
+            
+        if st.session_state.get('show_text'):
+            st.write("### Content")
+            st.write(st.session_state.current_exercise.get('content', ''))
         
         st.write("### Questions")
         correct_count = 0
@@ -129,18 +183,11 @@ def display_dialog_matching_exercise(exercise):
         st.write(f"\n**Dialog:** {dialog}")
         st.write(f"**Matches with:** {image}")
 
-# Initialize generator at startup
-try:
-    generator = ExercisesGenerator()
-except Exception as e:
-    logger.error(f"Error initializing generator: {e}")
-    generator = None
-
 def main():
     st.title("Listening learning")
     
-    if not generator:
-        st.error("Could not initialize exercise generator. Please check your AWS credentials.")
+    if not generator or not audio_generator:
+        st.error("Could not initialize exercise or audio generator. Please check your credentials.")
         return
     
     # Create tabs for different exercise types
