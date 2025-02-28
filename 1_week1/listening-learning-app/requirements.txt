@@ -1,7 +1,9 @@
 youtube-transcript-api
-boto3
-chromadb
-sentence-transformers
-streamlit
+streamlit>=1.31.0
+boto3>=1.34.0
+python-dotenv>=1.0.0
+torch>=2.2.0
+sentence-transformers>=2.5.0
+chromadb>=0.4.22 
 
 #openai
