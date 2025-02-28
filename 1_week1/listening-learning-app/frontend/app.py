@@ -16,7 +16,6 @@ load_dotenv()
 # Set path manually for torch
 torch.classes.__path__ = [os.path.join(torch.__path__[0], torch.classes.__file__)] 
 
-
 # Add backend directory to Python path
 backend_dir = Path(__file__).parent.parent / "backend"
 sys.path.append(str(backend_dir))
@@ -44,67 +43,72 @@ def display_multiple_choice_exercise(exercise):
         st.write(st.session_state.current_exercise.get('content', ''))
         
         st.write("### Questions")
+        correct_count = 0
+        total_questions = len(st.session_state.current_exercise.get('questions', []))
+        
         for i, question in enumerate(st.session_state.current_exercise.get('questions', []), 1):
             st.write(f"\n**Question {i}:** {question.get('question', '')}")
             
             # Create radio buttons for options
             options = question.get('options', [])
             question_key = f"question_{i}"
+            correct_answer = question.get('correct_answer')
             
             # Initialize this question's answer in session state if not exists
             if question_key not in st.session_state.user_answers:
                 st.session_state.user_answers[question_key] = None
-                
-            # Create radio buttons and update session state
-            answer = st.radio(
-                f"Select answer for question {i}",
-                options,
-                key=f"radio_{question_key}",
-                index=None,
-                label_visibility="collapsed"
-            )
             
-            # Update session state when answer changes
-            if answer is not None:
-                st.session_state.user_answers[question_key] = answer
+            # If submitted, show colored options
+            if st.session_state.submitted and st.session_state.user_answers.get(question_key):
+                user_answer = st.session_state.user_answers[question_key]
+                is_correct = user_answer == correct_answer
+                if is_correct:
+                    correct_count += 1
+                
+                # Display options with coloring
+                for option in options:
+                    if option == correct_answer and option == user_answer:
+                        st.success(f"✓ {option}")
+                    elif option == correct_answer:
+                        st.success(f"✓ {option} (Correct answer)")
+                    elif option == user_answer:
+                        st.error(f"✗ {option} (Your answer)")
+                    else:
+                        st.write(f"  {option}")
+            else:
+                # Create radio buttons for selection
+                user_answer = st.radio(
+                    f"Select answer for question {i}",
+                    options,
+                    key=f"radio_{question_key}",
+                    index=None,
+                    label_visibility="collapsed"
+                )
+                
+                # Update session state when answer changes
+                if user_answer is not None:
+                    st.session_state.user_answers[question_key] = user_answer
     
-    # Create a container for the submit button and results
+    # Create a container for the submit button and final score
     result_container = st.container()
     
     with result_container:
         # Submit button
         if st.button("Submit Answers", key="submit_button"):
-            st.session_state.submitted = True
+            if any(answer is None for answer in st.session_state.user_answers.values()):
+                st.error("Please answer all questions before submitting.")
+            else:
+                st.session_state.submitted = True
+                st.rerun()
         
-        # Show results if submitted
+        # Show final score if submitted
         if st.session_state.submitted:
             st.write("---")  # Divider
-            st.write("### Results")
-            
-            correct_count = 0
-            total_questions = len(st.session_state.current_exercise.get('questions', []))
-            
-            for i, question in enumerate(st.session_state.current_exercise.get('questions', []), 1):
-                question_key = f"question_{i}"
-                user_answer = st.session_state.user_answers.get(question_key)
-                correct_answer = question.get('correct_answer')
-                
-                is_correct = user_answer == correct_answer
-                if is_correct:
-                    correct_count += 1
-                
-                # Display results with color-coding
-                st.markdown(
-                    f"**Question {i}:** "
-                    f"{'✅' if is_correct else '❌'} "
-                    f"Your answer: {user_answer}\n\n"
-                    f"Correct answer: {correct_answer}"
-                )
-            
-            # Display final score
             score_percentage = (correct_count / total_questions) * 100
-            st.write(f"\n### Final Score: {score_percentage:.1f}%")
-            st.write(f"You got {correct_count} out of {total_questions} questions correct!")
+            if score_percentage >= 70:
+                st.success(f"### Final Score: {score_percentage:.1f}%\nYou got {correct_count} out of {total_questions} questions correct!")
+            else:
+                st.error(f"### Final Score: {score_percentage:.1f}%\nYou got {correct_count} out of {total_questions} questions correct!")
 
 def display_dialog_matching_exercise(exercise):
     """Display a dialog matching exercise in a formatted way"""
@@ -157,22 +161,33 @@ def main():
     
     # Generate button
     if st.button("Generate Exercise", key="generate_button"):
-        # Clear previous exercise state when generating new one
-        st.session_state.current_exercise = None
-        st.session_state.user_answers = {}
-        st.session_state.submitted = False
-        
         with st.spinner("Generating exercise..."):
             try:
                 if exercise_type == "Multiple Choice":
                     exercise = generator.generate_multiple_choice(selected_topic)
-                    display_multiple_choice_exercise(exercise)
+                    logger.info(f"Generated exercise: {exercise}")
+                    
+                    # Validate exercise structure
+                    if not exercise:
+                        raise ValueError("Generated exercise is None")
+                    if not isinstance(exercise, dict):
+                        raise ValueError(f"Exercise should be a dict, got {type(exercise)}")
+                    if 'content' not in exercise or 'questions' not in exercise:
+                        raise ValueError(f"Exercise missing required fields. Got keys: {exercise.keys()}")
+                    if not exercise['questions']:
+                        raise ValueError("No questions in the exercise")
+                    
+                    # Set session state before displaying
+                    st.session_state.current_exercise = exercise
+                    st.session_state.user_answers = {}
+                    st.session_state.submitted = False
+                    
                 else:  # Dialog Matching
                     exercise = generator.generate_dialog_matching(selected_topic)
                     display_dialog_matching_exercise(exercise)
             except Exception as e:
-                logger.error(f"Error generating exercise: {e}")
-                st.error(f"Error generating exercise: {str(e)}")
+                logger.error(f"Error generating exercise: {e}", exc_info=True)
+                st.error(f"Error generating exercise: {str(e)}\nPlease try again or select a different topic.")
     
     # Display current exercise if it exists
     if hasattr(st.session_state, 'current_exercise') and st.session_state.current_exercise:
