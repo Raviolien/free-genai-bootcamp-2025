@@ -25,6 +25,15 @@ Create a listening learning app that mimics the listening comprehension tests in
 - Build from scratch the frontend
 - How much does Amazon cost?
 
+## Findings
+- Difficult to actually fine good youtube videos, most of them don't read aloud the full text together with answers, so llm end up treating them as two different exercises. 
+- Further work: create images & describe them in the transcript, so we can do dialog matching exercises
+
+### @ technical uncertainly
+- Build from scratch the backend: Completed this and it can be run in the terminal. 
+- Build from scratch the frontend: Attempted, keep getting error with Torch, but app runs  
+- AWS cost: No that expensive for this use case
+
 ## How to run
 ### Create and acitvate virtual environment
 python3 -m venv venv
@@ -33,11 +42,19 @@ source venv/bin/activate
 ### Install dependencies
 pip install -r requirements.txt
 
-### Run backend
-python backend.py
-	
+## How to run
+ Follow these steps to run 
+
+### Run backend files to set up vector store
+python get_transcript.py
+python process_transcripts.py    
+python vector_store.py
 
 ### Run frontend
 streamlit run app.py
 
+### To test backend 
+python create_restaurant_mc_exercise.py
 
+## Other
+https://github.com/awsdocs/aws-doc-sdk-examples/tree/main/python
