@@ -1,3 +1,11 @@
 /1_week1/venv
 /1_week1/lang-portal/frontend-react
 
+/2_week2/listening-learning-app/.env
+/2_week2/listening-learning-app/venv
+/2_week2/listening-learning-app/backend/data/transcripts/
+/2_week2/listening-learning-app/backend/data/exercises/
+/2_week2/listening-learning-app/backend/data/audio/
+/2_week2/listening-learning-app/backend/vector_db
+/2_week2/listening-learning-app/backend/old_vector_db
+/2_week2/listening-learning-app/backend/__pycache__
