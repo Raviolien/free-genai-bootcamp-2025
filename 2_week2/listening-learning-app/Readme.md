@@ -30,8 +30,8 @@ Create a listening learning app that mimics the listening comprehension tests in
 - Further work: create images & describe them in the transcript, so we can do dialog matching exercises
 
 ### @ technical uncertainly
-- Build from scratch the backend: Completed this and it can be run in the terminal. 
-- Build from scratch the frontend: Attempted, keep getting error with Torch, but app runs  
+- Build from scratch the backend: Completed this and it can be run in the terminal, not as difficult as I thought, utilizaed AI assistant (Cursor)
+- Build from scratch the frontend: This was the most time consuming part. Struggles with error messages with Torch, getting the wanted UI and to make it generate the audio. Workaround for Torch: doing an empty path. For audio Cursor put the generation in a function for displaying the exercise, needed to be moved to main() where the exercise is created
 - AWS cost: No that expensive for this use case
 
 ## How to run
