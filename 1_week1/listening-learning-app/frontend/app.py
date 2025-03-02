@@ -5,6 +5,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import logging
 import torch
+import json
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -37,46 +38,6 @@ def display_multiple_choice_exercise(exercise):
     if not exercise:
         st.error("No exercise generated")
         return
-    
-    # Initialize session state for exercise and answers if not exists
-    if 'current_exercise' not in st.session_state:
-        st.session_state.current_exercise = exercise
-        st.session_state.user_answers = {}
-        st.session_state.submitted = False
-        
-        # Generate audio when exercise is first loaded
-        try:
-            logger.info(f"Starting audio generation for content: {exercise['content'][:100]}...")  # Log first 100 chars
-            audio_files = audio_generator.generate_audio(
-                exercise_id="current",
-                content={'content': exercise['content']}
-            )
-            logger.info(f"Audio generation returned: {audio_files}")
-            
-            if 'content' in audio_files:
-                audio_path = audio_files['content']
-                logger.info(f"Attempting to read audio from: {audio_path}")
-                
-                # Check if path exists and is readable
-                if not os.path.exists(audio_path):
-                    logger.error(f"Audio file does not exist at path: {audio_path}")
-                    raise FileNotFoundError(f"Audio file not found: {audio_path}")
-                    
-                # Check file size
-                file_size = os.path.getsize(audio_path)
-                logger.info(f"Audio file size: {file_size} bytes")
-                
-                with open(audio_path, 'rb') as f:
-                    st.session_state.current_audio = f.read()
-                logger.info("Successfully loaded audio file into session state")
-            else:
-                logger.error(f"No 'content' key in audio_files: {audio_files}")
-                raise KeyError("No 'content' key in audio files response")
-            
-        except Exception as e:
-            logger.error(f"Error generating/loading audio: {e}", exc_info=True)
-            st.error(f"Could not generate audio for this exercise: {str(e)}")
-            st.session_state.current_audio = None
     
     # Create a container for the exercise content
     exercise_container = st.container()
@@ -212,7 +173,7 @@ def main():
             try:
                 if exercise_type == "Multiple Choice":
                     exercise = generator.generate_multiple_choice(selected_topic)
-                    logger.info(f"Generated exercise: {exercise}")
+                    logger.info(f"Raw exercise response: {exercise}")
                     
                     # Validate exercise structure
                     if not exercise:
@@ -224,11 +185,43 @@ def main():
                     if not exercise['questions']:
                         raise ValueError("No questions in the exercise")
                     
+                    # Generate audio for the exercise
+                    try:
+                        logger.info(f"Starting audio generation for content: {exercise['content'][:100]}...")
+                        audio_files = audio_generator.generate_audio(
+                            exercise_id="current",
+                            content={"content": exercise["content"]}
+                        )
+                        logger.info(f"Audio generation returned: {audio_files}")
+                        
+                        if 'content' in audio_files:
+                            audio_path = audio_files['content']
+                            logger.info(f"Attempting to read audio from: {audio_path}")
+                            
+                            if not os.path.exists(audio_path):
+                                logger.error(f"Audio file does not exist at path: {audio_path}")
+                                raise FileNotFoundError(f"Audio file not found: {audio_path}")
+                                
+                            file_size = os.path.getsize(audio_path)
+                            logger.info(f"Audio file size: {file_size} bytes")
+                            
+                            with open(audio_path, 'rb') as f:
+                                audio_content = f.read()
+                            logger.info("Successfully loaded audio file")
+                        else:
+                            logger.error(f"No 'content' key in audio_files: {audio_files}")
+                            raise KeyError("No 'content' key in audio files response")
+                            
+                    except Exception as e:
+                        logger.error(f"Error generating/loading audio: {e}", exc_info=True)
+                        st.error(f"Could not generate audio for this exercise: {str(e)}")
+                        audio_content = None
+                    
                     # Set session state before displaying
                     st.session_state.current_exercise = exercise
+                    st.session_state.current_audio = audio_content
                     st.session_state.user_answers = {}
                     st.session_state.submitted = False
-                    
                 else:  # Dialog Matching
                     exercise = generator.generate_dialog_matching(selected_topic)
                     display_dialog_matching_exercise(exercise)
