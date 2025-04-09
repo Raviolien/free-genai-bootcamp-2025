@@ -12,6 +12,7 @@ pip install -r requirements.txt
 
 ## Install Vito
 ```sh	
+cd frontend-react
 npm i -D @vitejs/plugin-react-swc
 ```
 
