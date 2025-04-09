@@ -60,13 +60,8 @@ export default function WordShow() {
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
         <div className="p-6 space-y-4">
           <div>
-            <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Japanese</h2>
-            <p className="mt-1 text-3xl text-gray-600 dark:text-gray-300">{word.kanji}</p>
-          </div>
-
-          <div>
-            <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Romaji</h2>
-            <p className="mt-1 text-xl text-gray-600 dark:text-gray-300">{word.romaji}</p>
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-white">French</h2>
+            <p className="mt-1 text-3xl text-gray-600 dark:text-gray-300">{word.french}</p>
           </div>
 
           <div>
@@ -74,7 +69,7 @@ export default function WordShow() {
             <p className="mt-1 text-xl text-gray-600 dark:text-gray-300">{word.english}</p>
           </div>
 
-          <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div>
             <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Study Statistics</h2>
             <div className="mt-2 grid grid-cols-2 gap-4">
               <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">

@@ -95,13 +95,13 @@ def load(app):
       offset = (page - 1) * words_per_page
 
       # Get sorting parameters
-      sort_by = request.args.get('sort_by', 'kanji')
+      sort_by = request.args.get('sort_by', 'french')  
       order = request.args.get('order', 'asc')
 
       # Validate sort parameters
-      valid_columns = ['kanji', 'romaji', 'english', 'correct_count', 'wrong_count']
+      valid_columns = ['french', 'english', 'correct_count', 'wrong_count']  # Updated valid columns
       if sort_by not in valid_columns:
-        sort_by = 'kanji'
+        sort_by = 'french'  
       if order not in ['asc', 'desc']:
         order = 'asc'
 
@@ -140,8 +140,7 @@ def load(app):
       for word in words:
         words_data.append({
           "id": word["id"],
-          "kanji": word["kanji"],
-          "romaji": word["romaji"],
+          "french": word["french"],  
           "english": word["english"],
           "correct_count": word["correct_count"],
           "wrong_count": word["wrong_count"]
@@ -188,10 +187,9 @@ def load(app):
       for row in data:
         word = {
           "id": row["id"],
-          "kanji": row["kanji"],
-          "romaji": row["romaji"],
+          "french": row["french"],  
           "english": row["english"],
-          "parts": json.loads(row["parts"])  # Deserialize 'parts' field
+          "parts": json.loads(row["parts"]) if row.get("parts") else None  # Added null check for parts
         }
         result["words"].append(word)
       
