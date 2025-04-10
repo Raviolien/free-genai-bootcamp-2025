@@ -43,14 +43,16 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 ## How to run
- Follow these steps to run 
+### Follow these steps to run 
 
 ### Run backend files to set up vector store
+cd backend
 python get_transcript.py
-python process_transcripts.py    
+python process_transcript.py    
 python vector_store.py
 
 ### Run frontend
+cd frontend
 streamlit run app.py
 
 ### To test backend 
