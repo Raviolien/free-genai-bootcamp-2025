@@ -18,8 +18,14 @@ load_dotenv()
 torch.classes.__path__ = [os.path.join(torch.__path__[0], torch.classes.__file__)] 
 
 # Add backend directory to Python path
-backend_dir = Path(__file__).parent.parent / "backend"
-sys.path.append(str(backend_dir))
+current_file = Path(__file__).resolve()
+project_root = current_file.parents[1] 
+backend_dir = project_root / 'backend'
+
+sys.path.append(str(backend_dir.absolute()))
+
+print(f"Backend directory path: {backend_dir.absolute()}")
+print(f"Current sys.path: {sys.path}")
 
 # Import after environment setup
 from exercise_generator import ExercisesGenerator
